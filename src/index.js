@@ -7,6 +7,7 @@ class Site {
         if (this.boards.find((exisBoard) => exisBoard.name === board.name)) {
             throw new Error('이름이 같으면 안됨');
         }
+        board.num = 0;
         this.boards.push(board);
     }
 
@@ -24,13 +25,16 @@ class Board {
         this.articles = [];
     }
     publish(article) {
+        if (this.num !== 0) {
+            throw new Error('사이트에 없는 보드임');
+        }
         const randomId = Math.random().toString(36).substring(2, 16);
         article.id = `${this.name}-${randomId}`;
         const date = new Date();
         article.createdDate = date.toISOString();
+        article.num = 0;
 
         this.articles.push(article);
-        // throw new Error('사이트에 없는 보드임');
     }
 
     getAllArticles() {
@@ -56,6 +60,9 @@ class Article {
     }
 
     reply(comment) {
+        if (this.num !== 0) {
+            throw new Error('보드에 없는 아티클임');
+        }
         const date = new Date();
         comment.createdDate = date.toISOString();
 
