@@ -7,7 +7,7 @@ class Site {
         if (this.boards.find((exisBoard) => exisBoard.name === board.name)) {
             throw new Error('이름이 같으면 안됨');
         }
-        board.num = 0;
+        board.flag = true;
         this.boards.push(board);
     }
 
@@ -18,39 +18,32 @@ class Site {
 
 class Board {
     constructor(boardName) {
-        if (boardName === '' || boardName === null) {
+        if (!boardName) {
             throw new Error('보드이름을 넣으시오');
         }
         this.name = boardName;
         this.articles = [];
     }
     publish(article) {
-        if (this.num !== 0) {
+        if (this.flag !== true) {
             throw new Error('사이트에 없는 보드임');
         }
         const randomId = Math.random().toString(36).substring(2, 16);
         article.id = `${this.name}-${randomId}`;
-        const date = new Date();
-        article.createdDate = date.toISOString();
-        article.num = 0;
+        article.createdDate = new Date().toISOString();
+        article.flag = true;
 
         this.articles.push(article);
     }
 
     getAllArticles() {
-        const articleList = [];
-        this.articles.forEach((article) => articleList.push(article));
-        return articleList;
+        return this.articles;
     }
 }
 
 class Article {
     constructor({ subject, content, author }) {
-        if (subject === '' || subject === null) {
-            throw new Error('빈배열은 용납 못함');
-        } else if (content === '' || content === null) {
-            throw new Error('빈배열은 용납 못함');
-        } else if (author === '' || author === null) {
+        if (!subject || !content || !author) {
             throw new Error('빈배열은 용납 못함');
         }
         this.subject = subject;
@@ -60,27 +53,21 @@ class Article {
     }
 
     reply(comment) {
-        if (this.num !== 0) {
+        if (this.flag !== true) {
             throw new Error('보드에 없는 아티클임');
         }
-        const date = new Date();
-        comment.createdDate = date.toISOString();
-
+        comment.createdDate = new Date().toISOString();
         this.comment.push(comment);
     }
 
     getAllComments() {
-        const commentList = [];
-        this.comment.forEach((comment) => commentList.push(comment));
-        return commentList;
+        return this.comment;
     }
 }
 
 class Comment {
     constructor({ content, author }) {
-        if (content === '' || content === null) {
-            throw new Error('빈배열은 용납 못함');
-        } else if (author === '' || author === null) {
+        if (!content || !author) {
             throw new Error('빈배열은 용납 못함');
         }
         this.content = content;
